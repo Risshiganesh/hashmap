@@ -266,7 +266,16 @@ console.log(newHashMap.values());
 
 console.log(newHashMap.entries());
 
-class hashSet {
+console.log("HASHSET");
+
+class HashSet {
+  // let buckets = [];
+  // buckets.length = 16;
+
+  constructor() {
+    this.buckets = [];
+    this.buckets.length = 16;
+  }
   hash(key) {
     let hashCode = 0;
 
@@ -275,11 +284,14 @@ class hashSet {
       hashCode = primeNumber * hashCode + key.charCodeAt(i);
     }
 
-    return hashCode % buckets.length;
+    return hashCode % this.buckets.length;
   }
 
   set(key) {
-    const hashCode = hash(key);
+    // console.log(key);
+
+    // return;
+    const hashCode = this.hash(key);
 
     console.log(hashCode);
 
@@ -288,20 +300,20 @@ class hashSet {
       next: null,
     };
 
-    temp = buckets[hashCode];
+    temp = this.buckets[hashCode];
 
     //   Add head
-    if (!buckets[hashCode]) {
-      buckets[hashCode] = newNode;
-      console.log(buckets[hashCode]);
-      console.log(buckets);
+    if (!this.buckets[hashCode]) {
+      this.buckets[hashCode] = newNode;
+      console.log(this.buckets[hashCode]);
+      console.log(this.buckets);
       return;
     }
 
     //   Check nodes to replace key.
     while (temp) {
       if (temp.key === newNode.key) {
-        temp.value = newNode.value;
+        // temp.value = newNode.value;
         return;
       }
 
@@ -317,19 +329,140 @@ class hashSet {
     return;
   }
 
-  get(key) {
-    const hashCode = hash(key);
+  // get(key) {
+  //   const hashCode = this.hash(key);
 
-    temp = buckets[hashCode];
+  //   temp = this.buckets[hashCode];
+
+  //   while (temp) {
+  //     if (temp.key === key) {
+  //       return temp.value;
+  //     }
+
+  //     temp = temp.next;
+  //   }
+
+  //   return null;
+  // }
+
+  has(key) {
+    const hashCode = this.hash(key);
+
+    temp = this.buckets[hashCode];
 
     while (temp) {
       if (temp.key === key) {
-        return temp.value;
+        return true;
       }
 
       temp = temp.next;
     }
 
-    return null;
+    return false;
+  }
+
+  remove(key) {
+    const hashCode = this.hash(key);
+
+    temp = this.buckets[hashCode];
+
+    if (!temp) {
+      return false;
+    }
+
+    if (temp.key === key) {
+      this.buckets[hashCode] = temp.next;
+      return this.buckets[hashCode];
+      return true;
+    }
+
+    while (temp.next) {
+      //   console.log("WORKS");
+      if (temp.next.key === key) {
+        temp.next = temp.next.next;
+
+        return true;
+      }
+
+      temp.next = temp.next.next;
+    }
+
+    return false;
+  }
+
+  length() {
+    temp = this.buckets;
+
+    console.log(temp);
+
+    let totalKeys = 0;
+
+    temp.forEach((bucket) => {
+      while (bucket) {
+        console.log("Incremented");
+        totalKeys++;
+        bucket = bucket.next;
+      }
+    });
+
+    return totalKeys;
+  }
+
+  clear() {
+    this.buckets = [];
+    this.buckets.length = 16;
+  }
+
+  entries() {
+    temp = this.buckets;
+
+    const keysCollection = [];
+
+    temp.forEach((bucket) => {
+      while (bucket) {
+        // console.log(bucket);
+        keysCollection.push(bucket.key);
+
+        bucket = bucket.next;
+      }
+    });
+
+    return keysCollection;
   }
 }
+
+const newSet = new HashSet();
+
+// Add
+
+console.log(newSet.set("Gold"));
+
+console.log(newSet.set("Black"));
+
+console.log(newSet.set("Pink"));
+
+console.log(newSet.set("Blue"));
+
+console.log(newSet.set("blue"));
+
+console.log(newSet.set("BLue"));
+
+// Check
+
+console.log(newSet.has("Goldy"));
+
+// Remove
+
+console.log(newSet.remove("blue"));
+
+// Clear all
+
+console.log(newSet.clear());
+
+// Show all
+
+console.log(newSet.entries());
+
+console.log(newSet.set("Red"));
+
+console.log(newSet.entries());
